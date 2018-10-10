@@ -1,0 +1,21 @@
+#!/bin/sh
+RMQ_HOME=/opt/appl/olrmq/rabbitmq
+PATH=$PATH:$HOME/bin:$RMQ_HOME/sbin
+export PATH
+discovery(){
+   Queue=(`rabbitmqctl list_queues |grep -v List |awk '{print $1}'`)
+   len=${#Queue[@]}
+   printf "{\n"
+   printf  '\t'"\"data\":["
+   for ((i=0;i<$len;i++))
+   do
+     printf '\n\t\t{'
+     printf "\"{#MQ_NAME}\":\"${Queue[$i]}\"}"
+     if [ $i -lt $[$len-1] ];then
+       printf ','
+     fi
+   done
+   printf  "\n\t]\n"
+   printf "}\n"
+}
+discovery
